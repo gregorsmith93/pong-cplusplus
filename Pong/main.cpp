@@ -10,7 +10,8 @@ static TCHAR szTitle[] = _T("Pong C++");
 // Game specific variables
 Player playerOne;
 Player playerTwo;
-bool isPlayerInitialised = false;
+Ball ball;
+bool isGameInitialised = false;
 
 // Forward declaration
 LRESULT CALLBACK WndProc(
@@ -110,16 +111,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// Calculating variables around window position, and using this initialise the player positions
 		RECT clientRectangle;
 		GetClientRect(hWnd, &clientRectangle);
-		int windowCenter = clientRectangle.top + ((clientRectangle.bottom - clientRectangle.top) / 2);
-		playerOne = Player(clientRectangle.left, windowCenter);
-		playerTwo = Player(clientRectangle.right - PLAYER_WIDTH - 5, windowCenter);
+		int verticalWindowCenter = clientRectangle.top + ((clientRectangle.bottom - clientRectangle.top) / 2);
+		int horizontalWindowCenter = clientRectangle.left + ((clientRectangle.right - clientRectangle.left) / 2);
+		playerOne = Player(clientRectangle.left, verticalWindowCenter);
+		playerTwo = Player(clientRectangle.right - PLAYER_WIDTH - 5, verticalWindowCenter);
+		ball = Ball(horizontalWindowCenter, verticalWindowCenter + (PLAYER_HEIGHT / 2));
 		break;
 	}
 	case WM_PAINT: {
 		// If during game initialisation, call the paint intiailising method, otherwise do nothing as paint will be handled without messages
-		if (!isPlayerInitialised) {
-			InitialisePlayers(hWnd, playerOne, playerTwo);
-			isPlayerInitialised = true;
+		if (!isGameInitialised) {
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hWnd, &ps);
+			InitialisePlayers(hWnd, hdc, playerOne, playerTwo);
+			InitialiseBall(hWnd, hdc, ball);
+			EndPaint(hWnd, &ps);
+			isGameInitialised = true;
 		}
 		break; 
 	    }

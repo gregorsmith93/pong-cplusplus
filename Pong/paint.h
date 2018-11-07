@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 #include "player.h"
+#include "ball.h"
 
 // Provides methods for painting the game
 
@@ -10,7 +11,10 @@
 const int SCREEN_BUFFER = 5;
 
 // Intialise the players for the game
-void InitialisePlayers(_In_ HWND hwnd,_In_ Player playerOne, _In_ Player playerTwo);
+void InitialisePlayers(_In_ HWND hwnd, _In_ HDC hdc,_In_ Player playerOne, _In_ Player playerTwo);
+
+// Initialise the ball for the game
+void InitialiseBall(_In_ HWND hwnd, _In_ HDC hdc, _In_ Ball ball);
 
 // Paint the players during the game
 void PaintPlayers(_In_ HWND hwnd, _In_ Player playerOne, _In_ Player playerTwo);

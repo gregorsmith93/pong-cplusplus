@@ -3,12 +3,7 @@
 // Implementation of painting methods
 
 // Intialise the players for the game
-void InitialisePlayers(HWND hwnd, Player playerOne, Player playerTwo) {
-
-	PAINTSTRUCT ps;
-	HDC hdc;
-
-	hdc = BeginPaint(hwnd, &ps);
+void InitialisePlayers(HWND hwnd, HDC hdc, Player playerOne, Player playerTwo) {
 
 	RECT rcWindow;
 	GetClientRect(hwnd, &rcWindow);
@@ -38,8 +33,20 @@ void InitialisePlayers(HWND hwnd, Player playerOne, Player playerTwo) {
 	InflateRect(&calculatedPlayerTwoRectangle, -SCREEN_BUFFER, -SCREEN_BUFFER);
 	SetDCPenColor(hdc, RGB(255, 255, 255));
 	Rectangle(hdc, calculatedPlayerTwoRectangle.left, calculatedPlayerTwoRectangle.top, calculatedPlayerTwoRectangle.right, calculatedPlayerTwoRectangle.bottom);
+}
 
-	EndPaint(hwnd, &ps);
+// Initialise the ball for the game
+void InitialiseBall(_In_ HWND hwnd, _In_ HDC hdc, _In_ Ball ball) {
+
+	RECT ballRectangle;
+
+	ballRectangle.left = ball.getX();
+	ballRectangle.right = ball.getX() + BALL_DIAMETER;
+	ballRectangle.top = ball.getY();
+	ballRectangle.bottom = ball.getY() + BALL_DIAMETER;
+
+	SetDCPenColor(hdc, RGB(255, 255, 255));
+	Ellipse(hdc, ballRectangle.left, ballRectangle.top, ballRectangle.right, ballRectangle.bottom);
 }
 
 // Paint the players during the game
