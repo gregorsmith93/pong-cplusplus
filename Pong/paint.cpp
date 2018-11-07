@@ -58,35 +58,6 @@ void PaintPlayers(HWND hwnd, Player playerOne, Player playerTwo) {
 	currentPlayerOneRectangle.top = playerOne.getPreviousY();
 	currentPlayerOneRectangle.bottom = playerOne.getPreviousY() + playerOne.getHeight();
 
-	// Player one positon based on potential movement
-	RECT calculatedPlayerOneRectangle;
-
-	calculatedPlayerOneRectangle.left = rcWindow.left + playerOne.getX();
-	calculatedPlayerOneRectangle.right = rcWindow.left + playerOne.getX() + playerOne.getWidth();
-	calculatedPlayerOneRectangle.top = rcWindow.top + playerOne.getY();
-	calculatedPlayerOneRectangle.bottom = rcWindow.top + playerOne.getY() + playerOne.getHeight();
-
-	bool updatePlayerOneRectangle;
-
-	// Player one has attempted to move off the bottom of the screen, move them to the buffer distance away from the bottom of the window
-	if (calculatedPlayerOneRectangle.bottom > rcWindow.bottom) {
-		calculatedPlayerOneRectangle.bottom = rcWindow.bottom - SCREEN_BUFFER;
-		calculatedPlayerOneRectangle.top = calculatedPlayerOneRectangle.bottom - PLAYER_HEIGHT;
-		playerOne.setY(calculatedPlayerOneRectangle.top);
-		updatePlayerOneRectangle = true;
-	}
-	// Player one has attemped to move off the top of the screen, move them to the buffer distance away from the top of the window
-	else if (calculatedPlayerOneRectangle.top < rcWindow.top) {
-		playerOne.setY(rcWindow.top + SCREEN_BUFFER);
-		calculatedPlayerOneRectangle.top = rcWindow.top + SCREEN_BUFFER;
-		calculatedPlayerOneRectangle.bottom = calculatedPlayerOneRectangle.top + PLAYER_HEIGHT;
-		updatePlayerOneRectangle = true;
-	} 
-	// Player ones new position is valid
-	else if (calculatedPlayerOneRectangle.bottom < rcWindow.bottom && calculatedPlayerOneRectangle.top > rcWindow.top) {
-		updatePlayerOneRectangle = true;
-	}
-
 	// Player two current position
 	RECT currentPlayerTwoRectangle;
 
@@ -95,69 +66,12 @@ void PaintPlayers(HWND hwnd, Player playerOne, Player playerTwo) {
 	currentPlayerTwoRectangle.top = playerTwo.getPreviousY();
 	currentPlayerTwoRectangle.bottom = playerTwo.getPreviousY() + playerTwo.getHeight();
 
-	// Player one positon based on potential movement
-	RECT calculatedPlayerTwoRectangle;
-
-	calculatedPlayerTwoRectangle.left = rcWindow.left + playerTwo.getX();
-	calculatedPlayerTwoRectangle.right = rcWindow.left + playerTwo.getX() + playerTwo.getWidth();
-	calculatedPlayerTwoRectangle.top = rcWindow.top + playerTwo.getY();
-	calculatedPlayerTwoRectangle.bottom = rcWindow.top + playerTwo.getY() + playerTwo.getHeight();
-
-	bool updatePlayerTwoRectangle;
-
-	// Player two has attempted to move off the bottom of the screen, move them to the buffer distance away from the bottom of the window
-	if (calculatedPlayerTwoRectangle.bottom > rcWindow.bottom) {
-		calculatedPlayerTwoRectangle.bottom = rcWindow.bottom - SCREEN_BUFFER;
-		calculatedPlayerTwoRectangle.top = calculatedPlayerTwoRectangle.bottom - PLAYER_HEIGHT;
-		playerTwo.setY(calculatedPlayerTwoRectangle.top);
-		updatePlayerTwoRectangle = true;
-	}
-	// Player two has attemped to move off the top of the screen, move them to the buffer distance away from the top of the window
-	else if (calculatedPlayerTwoRectangle.top < rcWindow.top) {
-		playerTwo.setY(rcWindow.top + SCREEN_BUFFER);
-		calculatedPlayerTwoRectangle.top = rcWindow.top + SCREEN_BUFFER;
-		calculatedPlayerTwoRectangle.bottom = calculatedPlayerTwoRectangle.top + PLAYER_HEIGHT;
-		updatePlayerTwoRectangle = true;
-	}
-	// Player twos new position is valid
-	else if (calculatedPlayerTwoRectangle.bottom < rcWindow.bottom && calculatedPlayerTwoRectangle.top > rcWindow.top) {
-		updatePlayerTwoRectangle = true;
-	}
-
 	// Determine whether or not to update players positions
-
 	RECT newPlayerOne;
 	RECT newPlayerTwo;
 
-	// Player one should be updated, use calculated position
-	if (updatePlayerOneRectangle) {
-		newPlayerOne.top = calculatedPlayerOneRectangle.top;
-		newPlayerOne.bottom = calculatedPlayerOneRectangle.bottom;
-		newPlayerOne.left = calculatedPlayerOneRectangle.left;
-		newPlayerOne.right = calculatedPlayerOneRectangle.right;
-	}
-	// Player one shouldn't be updated, use current position
-	else {
-		newPlayerOne.top = currentPlayerOneRectangle.top;
-		newPlayerOne.bottom = currentPlayerOneRectangle.bottom;
-		newPlayerOne.left = currentPlayerOneRectangle.left;
-		newPlayerOne.right = currentPlayerOneRectangle.right;
-	}
-
-	// Player two should be updated, use calculated position
-	if (updatePlayerTwoRectangle) {
-		newPlayerTwo.top = calculatedPlayerTwoRectangle.top;
-		newPlayerTwo.bottom = calculatedPlayerTwoRectangle.bottom;
-		newPlayerTwo.left = calculatedPlayerTwoRectangle.left;
-		newPlayerTwo.right = calculatedPlayerTwoRectangle.right;
-	}
-	// Player two shouldn't be updated, use current position
-	else {
-		newPlayerTwo.top = currentPlayerTwoRectangle.top;
-		newPlayerTwo.bottom = currentPlayerTwoRectangle.bottom;
-		newPlayerTwo.left = currentPlayerTwoRectangle.left;
-		newPlayerTwo.right = currentPlayerTwoRectangle.right;
-	}
+	CalculatePlayerRectangle(rcWindow, playerOne, newPlayerOne);
+	CalculatePlayerRectangle(rcWindow, playerTwo, newPlayerTwo);
 
 	// Cleanup current player rectangle
 	InvalidateRect(hwnd, &currentPlayerOneRectangle, true);
@@ -172,4 +86,60 @@ void PaintPlayers(HWND hwnd, Player playerOne, Player playerTwo) {
 	Rectangle(hdc, newPlayerTwo.left, newPlayerTwo.top, newPlayerTwo.right, newPlayerTwo.bottom);
 
 	ReleaseDC(hwnd, hdc);
+}
+
+// Calculate the player rectangle for a given player object within a window
+void CalculatePlayerRectangle(RECT window, Player player, RECT &newPlayerRectangle) {
+
+	// Player current position
+	RECT currentPlayerRectangle;
+
+	currentPlayerRectangle.left = player.getPreviousX();
+	currentPlayerRectangle.right = player.getPreviousX() + player.getWidth();
+	currentPlayerRectangle.top = player.getPreviousY();
+	currentPlayerRectangle.bottom = player.getPreviousY() + player.getHeight();
+
+	// Player positon based on potential movement
+	RECT calculatedPlayerRectangle;
+
+	calculatedPlayerRectangle.left = window.left + player.getX();
+	calculatedPlayerRectangle.right = window.left + player.getX() + player.getWidth();
+	calculatedPlayerRectangle.top = window.top + player.getY();
+	calculatedPlayerRectangle.bottom = window.top + player.getY() + player.getHeight();
+
+	bool updatePlayerRectangle;
+
+	// Player has attempted to move off the bottom of the screen, move them to the buffer distance away from the bottom of the window
+	if (calculatedPlayerRectangle.bottom > window.bottom) {
+		calculatedPlayerRectangle.bottom = window.bottom - SCREEN_BUFFER;
+		calculatedPlayerRectangle.top = calculatedPlayerRectangle.bottom - PLAYER_HEIGHT;
+		player.setY(calculatedPlayerRectangle.top);
+		updatePlayerRectangle = true;
+	}
+	// Player has attemped to move off the top of the screen, move them to the buffer distance away from the top of the window
+	else if (calculatedPlayerRectangle.top < window.top) {
+		player.setY(window.top + SCREEN_BUFFER);
+		calculatedPlayerRectangle.top = window.top + SCREEN_BUFFER;
+		calculatedPlayerRectangle.bottom = calculatedPlayerRectangle.top + PLAYER_HEIGHT;
+		updatePlayerRectangle = true;
+	}
+	// Players new position is valid
+	else if (calculatedPlayerRectangle.bottom < window.bottom && calculatedPlayerRectangle.top > window.top) {
+		updatePlayerRectangle = true;
+	}
+
+	// Player should be updated, use calculated position
+	if (updatePlayerRectangle) {
+		newPlayerRectangle.top = calculatedPlayerRectangle.top;
+		newPlayerRectangle.bottom = calculatedPlayerRectangle.bottom;
+		newPlayerRectangle.left = calculatedPlayerRectangle.left;
+		newPlayerRectangle.right = calculatedPlayerRectangle.right;
+	}
+	// Player shouldn't be updated, use current position
+	else {
+		newPlayerRectangle.top = currentPlayerRectangle.top;
+		newPlayerRectangle.bottom = currentPlayerRectangle.bottom;
+		newPlayerRectangle.left = currentPlayerRectangle.left;
+		newPlayerRectangle.right = currentPlayerRectangle.right;
+	}
 }

@@ -15,4 +15,6 @@ void InitialisePlayers(_In_ HWND hwnd,_In_ Player playerOne, _In_ Player playerT
 // Paint the players during the game
 void PaintPlayers(_In_ HWND hwnd, _In_ Player playerOne, _In_ Player playerTwo);
 
+// Calculate the player rectangle for a given player object within a window
+void CalculatePlayerRectangle(_In_ RECT window, _In_ Player player, _In_ RECT &newPlayerRectangle);
 #endif
