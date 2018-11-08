@@ -1,7 +1,7 @@
 #ifndef BALL_H
 #define BALL_H
 
-const int BALL_DIAMETER = 30;
+const int BALL_RADIUS = 15;
 
 class Ball {
     private:

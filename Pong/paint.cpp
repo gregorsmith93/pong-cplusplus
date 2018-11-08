@@ -40,10 +40,10 @@ void InitialiseBall(_In_ HWND hwnd, _In_ HDC hdc, _In_ Ball ball) {
 
 	RECT ballRectangle;
 
-	ballRectangle.left = ball.getX();
-	ballRectangle.right = ball.getX() + BALL_DIAMETER;
-	ballRectangle.top = ball.getY();
-	ballRectangle.bottom = ball.getY() + BALL_DIAMETER;
+	ballRectangle.left = ball.getX() - BALL_RADIUS;
+	ballRectangle.right = ball.getX() + BALL_RADIUS;
+	ballRectangle.top = ball.getY() - BALL_RADIUS;
+	ballRectangle.bottom = ball.getY() + BALL_RADIUS;
 
 	SetDCPenColor(hdc, RGB(255, 255, 255));
 	Ellipse(hdc, ballRectangle.left, ballRectangle.top, ballRectangle.right, ballRectangle.bottom);
