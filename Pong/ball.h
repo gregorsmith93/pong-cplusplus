@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <math.h>
+#include "utils.h"
 
 const int BALL_RADIUS = 12;
 const float BALL_SPEED = 15;

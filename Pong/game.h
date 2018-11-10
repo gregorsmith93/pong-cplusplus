@@ -22,6 +22,4 @@ void DetectPlayerCollision(_In_ Ball &ball, _In_ Player playerOne, _In_ Player p
 
 OutOfPlayResult DetectBallOutOfPlay(_In_ HWND hwnd, _In_ Ball ball);
 
-float RandomFloat(float a, float b);
-
 #endif

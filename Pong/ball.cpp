@@ -67,9 +67,10 @@ void Ball::EnsureValidDirectionVector() {
 	}
 
 	if (invalidDirectionVector) {
-		float maxBallAngleInRadians = MAX_BALL_ANGLE * (pi / 180);
-		float ensuredXComponent = BALL_SPEED * std::cos(maxBallAngleInRadians);
-		float ensuredYComponent = BALL_SPEED * std::sin(maxBallAngleInRadians);
+		float validAngleInDegrees = RandomFloat(0, MAX_BALL_ANGLE);
+		float validAngleInRadians = validAngleInDegrees * (pi / 180);
+		float ensuredXComponent = BALL_SPEED * std::cos(validAngleInRadians);
+		float ensuredYComponent = BALL_SPEED * std::sin(validAngleInRadians);
 
 		if (xComponent < 0) {
 			ensuredXComponent *= -1;

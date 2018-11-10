@@ -3,6 +3,7 @@
 #include "paint.h"
 #include "player.h"
 #include "game.h"
+#include "utils.h"
 #include <chrono>
 #include <thread>
 
