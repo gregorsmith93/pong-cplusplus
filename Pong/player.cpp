@@ -10,6 +10,7 @@ Player::Player(int t_x, int t_y) {
 	m_yPos = t_y;
 	m_width = PLAYER_WIDTH;
 	m_height = PLAYER_HEIGHT;
+	m_score = 0;
 }
 
 // Default constructor
@@ -65,4 +66,16 @@ void Player::MovePlayerYAxis(int t_direction) {
 		m_prev_yPos = m_yPos;
 		m_yPos -= PLAYER_SPEED;
 	}
+}
+
+int Player::getScore() {
+	return m_score;
+}
+
+void Player::setScore(int t_x) {
+	m_score = t_x;
+}
+
+void Player::incrementScore() {
+	m_score += 1;
 }

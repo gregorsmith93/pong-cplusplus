@@ -2,6 +2,9 @@
 #include <tchar.h>
 #include "paint.h"
 #include "player.h"
+#include "game.h"
+#include <chrono>
+#include <thread>
 
 HINSTANCE hInst;
 static TCHAR szWindowClass[] = _T("pong");
@@ -11,7 +14,9 @@ static TCHAR szTitle[] = _T("Pong C++");
 Player playerOne;
 Player playerTwo;
 Ball ball;
+Ball initialBallPosition;
 bool isGameInitialised = false;
+bool isGameRunning = false;
 
 // Forward declaration
 LRESULT CALLBACK WndProc(
@@ -95,6 +100,38 @@ int WINAPI WinMain(
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+
+		if (isGameRunning) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(TICK_PERIOD));
+
+			DetermineNewBallPosition(hWnd, ball);
+			OutOfPlayResult outOfPlayResult = DetectBallOutOfPlay(hWnd, ball);
+
+			if (outOfPlayResult.outOfPlay) {
+				ball.moveBall(initialBallPosition.getX(), initialBallPosition.getY());
+				ball.setDirectionVector(RandomFloat(-1, 1), RandomFloat(-1, -1));
+
+				if (outOfPlayResult.playerId == 1) {
+					playerTwo.incrementScore();
+				}
+				else if (outOfPlayResult.playerId == 2) {
+					playerOne.incrementScore();
+				}
+			}
+
+			if (playerOne.getScore() >= 10) {
+				isGameRunning = false;
+				break;
+			}
+			else if (playerTwo.getScore() >= 10) {
+				isGameRunning = false;
+				break;
+			}
+
+			DetectPlayerCollision(ball, playerOne, playerTwo);
+			UpdatePlayersAndBall(hWnd, playerOne, playerTwo, ball);
+			
+		}
 	}
 
 	return (int)msg.wParam;
@@ -115,6 +152,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int horizontalWindowCenter = clientRectangle.left + ((clientRectangle.right - clientRectangle.left) / 2);
 		playerOne = Player(clientRectangle.left, verticalWindowCenter);
 		playerTwo = Player(clientRectangle.right - PLAYER_WIDTH - 5, verticalWindowCenter);
+		initialBallPosition = Ball(horizontalWindowCenter, verticalWindowCenter + (PLAYER_HEIGHT / 2));
 		ball = Ball(horizontalWindowCenter, verticalWindowCenter + (PLAYER_HEIGHT / 2));
 		break;
 	}
@@ -145,9 +183,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		else if (wParam == VK_DOWN) {
 			playerTwo.MovePlayerYAxis(1);
 		}
+		else if (wParam == VK_SPACE) {
+			ball.setDirectionVector(RandomFloat(-1, 1), RandomFloat(-1, 1));
+			isGameRunning = true;
+		}
 
-		// Repaint the player positions after movement event
-		PaintPlayers(hWnd, playerOne, playerTwo);
 		break;
 	}
 	// Exit message

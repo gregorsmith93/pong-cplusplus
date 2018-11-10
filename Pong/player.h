@@ -4,7 +4,7 @@
 // Player constants
 const int PLAYER_HEIGHT = 120;
 const int PLAYER_WIDTH = 30;
-const int PLAYER_SPEED = 60;
+const int PLAYER_SPEED = 90;
 
 // Holds information relating to an individual player, i.e. position.
 class Player {
@@ -19,6 +19,7 @@ class Player {
 		// Player physical properties
 	    int m_width, m_height;
 
+		int m_score;
     // Public methods
     public:
 		// Get x axis position after movement has been applied
@@ -50,5 +51,11 @@ class Player {
 
 		// Move a player along the y axis
 		void MovePlayerYAxis(int t_direction);
+
+		int getScore();
+
+		void setScore(int t_x);
+
+		void incrementScore();
 };
 #endif
