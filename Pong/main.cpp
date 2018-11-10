@@ -129,8 +129,6 @@ int WINAPI WinMain(
 			}
 
 			DetectPlayerCollision(ball, playerOne, playerTwo);
-			UpdatePlayersAndBall(hWnd, playerOne, playerTwo, ball);
-			
 		}
 	}
 
@@ -154,18 +152,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		playerTwo = Player(clientRectangle.right - PLAYER_WIDTH - 5, verticalWindowCenter);
 		initialBallPosition = Ball(horizontalWindowCenter, verticalWindowCenter + (PLAYER_HEIGHT / 2));
 		ball = Ball(horizontalWindowCenter, verticalWindowCenter + (PLAYER_HEIGHT / 2));
+		SetTimer(hWnd, 1, 20, NULL);
+		break;
+	}
+	case WM_TIMER: {
+		InvalidateRect(hWnd, NULL, TRUE);
 		break;
 	}
 	case WM_PAINT: {
-		// If during game initialisation, call the paint intiailising method, otherwise do nothing as paint will be handled without messages
-		if (!isGameInitialised) {
-			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint(hWnd, &ps);
-			InitialisePlayers(hWnd, hdc, playerOne, playerTwo);
-			InitialiseBall(hWnd, hdc, ball);
-			EndPaint(hWnd, &ps);
-			isGameInitialised = true;
-		}
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		UpdatePlayersAndBall(hWnd, hdc, playerOne, playerTwo, ball);
+		EndPaint(hWnd, &ps);
+		
 		break; 
 	    }
 	// Handling all player inputs here

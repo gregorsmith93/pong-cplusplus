@@ -5,7 +5,7 @@
 #include <math.h>
 
 const int BALL_RADIUS = 12;
-const float BALL_SPEED = 30;
+const float BALL_SPEED = 15;
 const unsigned int DIRECTION_VECTOR_CAPACITY = 2;
 const float MAX_BALL_ANGLE = 60;
 const double pi = std::atan(1) * 4;

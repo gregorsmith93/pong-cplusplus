@@ -7,7 +7,7 @@
 #include "player.h"
 #include "ball.h"
 
-const unsigned int TICK_PERIOD = 20;
+const unsigned int TICK_PERIOD = 5;
 
 struct OutOfPlayResult {
 	bool outOfPlay;

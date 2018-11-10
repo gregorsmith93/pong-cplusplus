@@ -4,7 +4,7 @@
 // Player constants
 const int PLAYER_HEIGHT = 120;
 const int PLAYER_WIDTH = 30;
-const int PLAYER_SPEED = 90;
+const int PLAYER_SPEED = 200  ;
 
 // Holds information relating to an individual player, i.e. position.
 class Player {
